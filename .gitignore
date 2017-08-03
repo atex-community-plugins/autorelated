@@ -1,4 +1,5 @@
 target
+.vscode
 .settings
 .classpath
 .project
@@ -16,3 +17,5 @@ rebel.xml
 .#*
 .DS_Store
 work
+.java-version
+.mvn-version

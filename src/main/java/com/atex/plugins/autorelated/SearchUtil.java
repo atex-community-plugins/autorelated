@@ -11,6 +11,7 @@ import com.atex.plugins.autorelated.decorators.WithoutContentId;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.polopoly.cm.ContentId;
+import com.polopoly.cm.app.search.categorization.dimension.AbstractCategoryDimensionInputPolicy;
 import com.polopoly.cm.client.CMException;
 import com.polopoly.cm.collections.ContentList;
 import com.polopoly.cm.policy.ContentPolicy;
@@ -19,7 +20,7 @@ import com.polopoly.cm.policy.PolicyCMServer;
 import com.polopoly.metadata.Dimension;
 import com.polopoly.metadata.Metadata;
 import com.polopoly.metadata.MetadataAware;
-import com.polopoly.metadata.MetadataDimension;
+import com.polopoly.metadata.util.CategorizationToMetadata;
 import com.polopoly.metadata.util.MetadataUtil;
 import com.polopoly.search.metadata.DimensionOperator;
 import com.polopoly.search.metadata.EntityOperator;
@@ -122,13 +123,11 @@ public class SearchUtil {
             for (int idx = 0; idx < contentList.size(); idx++) {
                 final ContentId contentId = contentList.getEntry(idx).getReferredContentId();
                 final Policy policy = cmServer.getPolicy(contentId);
-                if (policy instanceof MetadataDimension) {
-                    final Dimension dimension = ((MetadataDimension) policy).getDimension();
-                    if (dimension == null) {
-                        continue;
-                    }
-                    configuredDimensions.add(dimension);
+                final Dimension dimension = from(policy);
+                if (dimension == null) {
+                    continue;
                 }
+                configuredDimensions.add(dimension);
             }
             if (configuredDimensions.size() > 0) {
                 final Metadata newMetadata = new Metadata();
@@ -144,6 +143,14 @@ public class SearchUtil {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return metadata;
+    }
+
+    private Dimension from(final Policy policy) throws CMException {
+        if (policy instanceof AbstractCategoryDimensionInputPolicy) {
+            return CategorizationToMetadata.convert(((AbstractCategoryDimensionInputPolicy) policy)
+                    .getCategorization());
+        }
+        return null;
     }
 
     public SolrQuery getSolrQuery(final ContentId contentId,
