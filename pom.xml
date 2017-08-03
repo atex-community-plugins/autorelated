@@ -32,7 +32,7 @@
   <scm>
     <developerConnection>scm:git:git@github.com:atex-community-plugins/autorelated.git</developerConnection>
     <url>https://github.com/atex-community-plugins/autorelated</url>
-    <tag>HEAD</tag>
+    <tag>java17</tag>
   </scm>
 
   <properties>
