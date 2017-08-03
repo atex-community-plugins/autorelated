@@ -28,13 +28,11 @@ import com.polopoly.model.ModelDomain;
 import com.polopoly.model.ModelFactory;
 import com.polopoly.model.ModelPathUtil;
 import com.polopoly.render.RenderRequest;
-import com.polopoly.search.metadata.MetadataQueryBuilder;
 import com.polopoly.search.solr.SearchClient;
 import com.polopoly.search.solr.SearchResult;
 import com.polopoly.search.solr.SearchResultPage;
 import com.polopoly.search.solr.SolrSearchClient;
 import com.polopoly.search.solr.querydecorators.WithDecorators;
-import com.polopoly.search.solr.schema.IndexFields;
 import com.polopoly.siteengine.dispatcher.ControllerContext;
 import com.polopoly.siteengine.dispatcher.SiteEngine;
 import com.polopoly.siteengine.dispatcher.SiteEngineApplication;
@@ -52,29 +50,16 @@ public class AutoRelatedController extends RenderControllerBase {
 
     private static final Logger LOGGER = Logger.getLogger(AutoRelatedController.class.getName());
 
-    private static final MetadataQueryBuilder metadataQueryBuilder = new MetadataQueryBuilder();
-    private static final String PUBDATE_FIELDNAME = IndexFields.PUBLISHING_DATE.fieldName();
-
-    // prefer newest content, see https://stackoverflow.com/questions/22017616/stronger-boosting-by-date-in-solr
-    // usually we use recip(ms(NOW/HOUR, publishingDate),3.16e-11,1,1) for 365 days
-    // but we prefer to use 15552000000 which is 180 days.
-
-    private static final String BOOST_FUNC_PARAM = String.format("recip(ms(NOW/HOUR, %s),6.43e-11,1,1)", PUBDATE_FIELDNAME);
-    private static final String BOOST_QUERY_PARAM = String.format("%s:[NOW/DAY-1YEAR TO NOW/DAY]", PUBDATE_FIELDNAME);
-
     private static final Cache<String, List<ContentId>> IDS_CACHE =  CacheBuilder.newBuilder()
                                                                                  .maximumSize(1000)
                                                                                  .expireAfterAccess(10, TimeUnit.MINUTES)
                                                                                  .build();
 
     private final SearchUtil searchUtil = new SearchUtil();
-    private boolean inPreviewMode = false;
 
     @Override
     public void populateModelBeforeCacheKey(final RenderRequest request, final TopModel m, final ControllerContext context) {
         super.populateModelBeforeCacheKey(request, m, context);
-
-        inPreviewMode = m.getRequest().getPreview().isInPreviewMode();
 
         if (m.getContext().getPage() != null && !m.getContext().getPage().getPathAfterPage().isEmpty()) {
 
