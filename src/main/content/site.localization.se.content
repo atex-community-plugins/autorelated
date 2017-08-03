@@ -1,0 +1,4 @@
+id:localizedstrings.swedish
+major:1
+inputtemplate:p.siteengine.LocalizedStrings
+component:localizedstrings:com.atex.plugins.autorelated.YouMayAlsoLike:You may also like\:

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template-definition version="1.0" xmlns="http://www.polopoly.com/polopoly/cm/app/xml">
+
+  <input-template name="com.atex.plugins.autorelated.siteSettings" label="com.atex.plugins.autorelated.siteSettings.label">
+    <policy>com.atex.plugins.autorelated.SiteSettingsPolicy</policy>
+    <editor>com.polopoly.cm.app.widget.OTopPolicyWidget</editor>
+    <viewer>com.polopoly.cm.app.widget.OTopPolicyWidget</viewer>
+
+    <content-list name="autorelatedCategorization" input-template="p.CategorizationContentListWrapper" />
+    <content-list name="autorelatedSources" input-template="com.atex.plugins.baseline.DecoratorContentListWrapper" />
+
+    <field name="enabled" input-template="p.Checkbox" label="com.atex.plugins.autorelated.siteSettings.enabled">
+      <param name="checked">false</param>
+    </field>
+
+    <layout name="columns" input-template="p.ColumnHolder">
+      <layout name="col1" input-template="p.Column">
+        <field name="maxResults" input-template="p.TextInput" label="com.atex.plugins.autorelated.siteSettings.maxResuts">
+          <policy>com.polopoly.cm.app.policy.NumberInputPolicy</policy>
+          <param name="type">int</param>
+          <param name="default">5</param>
+          <param name="size">10</param>
+        </field>
+      </layout>
+      <layout name="col2" input-template="p.Column">
+        <field name="minimumMatch" input-template="p.TextInput" label="com.atex.plugins.autorelated.siteSettings.minimumMatch">
+          <help>com.atex.plugins.autorelated.siteSettings.minimumMatch.help</help>
+          <param name="inlineHelp">true</param>
+          <param name="size">10</param>
+        </field>
+      </layout>
+    </layout>
+
+    <layout name="categorySection" input-template="p.LabeledSection" label="com.atex.plugins.autorelated.siteSettings.categorization">
+      <param name="cssClass">p_section</param>
+      <layout name="categorySection-help" input-template="p.Comment">
+        <param name="comment">com.atex.plugins.autorelated.siteSettings.categorization.help</param>
+      </layout>
+
+      <layout name="categorizationPadding" input-template="p.Group">
+        <param name="showLabel">false</param>
+        <param name="showFieldset">false</param>
+        <param name="cssClass">p_padding</param>
+
+        <field name="categorizationContentList" input-template="p.ContentListEntryContainer" label="cm.label.Categorizations">
+          <param name="contentListName">autorelatedCategorization</param>
+        </field>
+      </layout>
+    </layout>
+
+    <layout name="criteriaSection" input-template="p.LabeledSection" label="com.atex.plugins.baseline.pq.SearchDriven.searchCriteria.label">
+      <param name="cssClass">p_section</param>
+      <field name="sourcesContentCreator" input-template="p.ContentCreator">
+        <param name="createWithSecurityParent">true</param>
+        <param name="securityParentAlias">content</param>
+        <param name="insertTargetAlias">content</param>
+        <param name="askInsertionContentListName">false</param>
+        <param name="editInContext">true</param>
+        <param name="autoInsertContentListRelativeName">sourcesContainer</param>
+        <param name="showCategorySelectWithOneCategory">false</param>
+        <param name="useSecurityParentForCreateCheck">false</param>
+        <param name="showInHeader">true</param>
+        <idparam name="templateRoot">
+          <externalid>com.atex.plugins.baseline.SearchDrivenPublishingQueueTemplateRoot</externalid>
+        </idparam>
+      </field>
+      <field name="sourcesContainer" input-template="p.ContentListEntryContainer">
+        <param name="contentListName">autorelatedSources</param>
+        <param name="showPasteButton">false</param>
+        <param name="showCopyButton">false</param>
+        <param name="showCutButton">false</param>
+      </field>
+    </layout>
+
+  </input-template>
+
+</template-definition>

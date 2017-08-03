@@ -1,0 +1,38 @@
+#if ($related)
+  #set($rs = $m.context.site.bean.resources.strings)
+  #set($prs = $rs.com.atex.plugins.autorelated)
+  <section class="related">
+    <h3>$prs.YouMayAlsoLike</h3>
+    #set($index = 0)
+    #set($rowOpen = false)
+    #foreach($entry in $related)
+      #if ($math.mod($index,2) == 0)
+      <div class="row">
+        #set($rowOpen = true)
+      #end
+      #if ($entry.content)
+      <div class="col-sm-6 item">
+        #if ($entry.content)
+        #set($parentId = $entry.content.parentId)
+        #set($parent = $tool_model.getModel($parentId))
+        <div class="section">$!parent.name</div>
+        #set($path = $p_path.resolve($entry.contentId, $m.context.page.contentPath))
+        <a href="#link({"path": $path, 'htmlEncodeLink': 'true'})">
+          $!esc.html($entry.content.name)
+        </a>
+        #end
+      </div>
+      #end
+      #if ($rowOpen && $math.mod($index,2) == 1)
+      </div><!--row-->
+        #set($rowOpen = false)
+      #end
+      #if ($entry.content)
+        #set($index = $index + 1)
+      #end
+    #end
+    #if ($rowOpen)
+    </div><!--row-->
+    #end
+  </section>
+#end
